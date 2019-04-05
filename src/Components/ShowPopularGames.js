@@ -1,49 +1,55 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+
 
 class ShowPopularGames extends Component {
-	constructor() {
+	constructor(props) {
+		super(props);
+		this.countStreams = this.countStreams.bind(this);
+	}
+	// curl -H 'Client-ID: 3iy9n0eatjk9mnzujv90whbyiho8gu' \
+	// -X GET 'https://api.twitch.tv/helix/streams?game_id=33214'
+
+
+	getStreams = async () => {
 		const axios = require('axios')
-
-		const getBreeds = async () => {
-			try {
-				return await axios.get('https://dog.ceo/api/breeds/list/all')
-			} catch (error) {
-				console.error(error)
-			}
+		try {
+			return await
+				axios.get('https://api.twitch.tv/kraken/streams/?client_id=3iy9n0eatjk9mnzujv90whbyiho8gu')
+		} catch (error) {
+			console.error(error)
 		}
+	}
 
-		const countBreeds = async () => {
-			const breeds = await getBreeds()
+	countStreams = async () => {
 
-			if (breeds.data.message) {
-				console.log(`Got ${Object.entries(breeds.data.message).length} breeds`)
+		const currentTopStreams = [];
+		const currentStreams = await this.getStreams()
+
+		if (currentStreams) {
+			console.log(currentStreams.data.streams);
+			console.log(currentStreams.data.streams[0].game);
+			var i;
+			for (i = 0; i < currentStreams.data.streams.length; i++) {
+				currentTopStreams.push(currentStreams.data.streams[i].game);
 			}
+			console.log(currentTopStreams);
+
+
+		} else {
+			console.log('Nobody is playing that game right now.');
 		}
-
-		countBreeds()
-		super();
-		this.getPopularGames = this.getPopularGames.bind(this);
 	};
-
-	getPopularGames() {
-		console.log('get popular games called');
-	};
-
-
-
-
-
 
 
 	render() {
 		return (
 			<div>
 				<button
-					onClick={this.getPopularGames}
+					onClick={this.countStreams}
 				>
 					What's popular right now?
-				</button>
+			</button>
 			</div>
 		);
 	}
